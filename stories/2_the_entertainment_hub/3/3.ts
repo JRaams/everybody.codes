@@ -52,3 +52,23 @@ dices.forEach((dice) => {
 });
 
 console.log(visited.size);
+
+// Generate PPM image
+
+// const ppmHeader = `P3\n${gridWidth} ${gridRows.length}\n255\n`;
+// let ppmContent = ppmHeader;
+
+// for (let y = 0; y < gridRows.length; y++) {
+//   for (let x = 0; x < gridWidth; x++) {
+//     const pos = y * gridWidth + x;
+
+//     if (visited.has(pos)) {
+//       ppmContent += "0 0 0 ";
+//     } else {
+//       ppmContent += "255 255 255 ";
+//     }
+//   }
+//   ppmContent += "\n";
+// }
+
+// await Bun.write(__dirname + "/output.ppm", ppmContent);
