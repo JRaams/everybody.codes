@@ -12,6 +12,10 @@ Solutions are written in TypeScript, ran using [Bun v1.2](https://bun.com/)
 
 ## 2. Stories
 
+### Echoes of Enigmatus [ No. 1 ]
+
+https://everybody.codes/story/1/quests
+
 ### The Entertainment Hub [ No. 2 ]
 
 https://everybody.codes/story/2/quests
