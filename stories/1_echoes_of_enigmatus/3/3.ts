@@ -7,17 +7,15 @@ const snails = lines.split("\n").map((line) =>
     .map(Number)
 );
 
-const cycles = snails.map(([x, y]) => x + y - 1);
-console.log(cycles);
-
 // Thank you AOC 2020 day 13
 let firstCommon = 0;
 let step = 1;
 
-for (let i = 0; i < cycles.length; i++) {
-  const cycle = cycles[i];
+for (let i = 0; i < snails.length; i++) {
+  const [x, y] = snails[i];
+  const cycle = x + y - 1;
 
-  while ((firstCommon + snails[i][0]) % cycle !== 0) {
+  while ((firstCommon + x) % cycle !== 0) {
     firstCommon += step;
   }
 
