@@ -10,13 +10,19 @@ Solutions are written in TypeScript, ran using [Bun v1.2](https://bun.com/)
 
 `bun run 1.ts`
 
-## 2. Stories
+## 2. Events
 
-### Echoes of Enigmatus [ No. 1 ]
+### 🌒 9/60. The Kingdom of Algorithmia [ 2024 ]
+
+https://everybody.codes/event/2024/quests
+
+## 3. Stories
+
+### 🪙 9/9. Echoes of Enigmatus [ No. 1 ]
 
 https://everybody.codes/story/1/quests
 
-### The Entertainment Hub [ No. 2 ]
+### 🪙 9/9. The Entertainment Hub [ No. 2 ]
 
 https://everybody.codes/story/2/quests
 
