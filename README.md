@@ -12,7 +12,7 @@ Solutions are written in TypeScript, ran using [Bun v1.2](https://bun.com/)
 
 ## 2. Events
 
-### 🌒 18/60. The Kingdom of Algorithmia [ 2024 ]
+### 🌒 21/60. The Kingdom of Algorithmia [ 2024 ]
 
 https://everybody.codes/event/2024/quests
 
