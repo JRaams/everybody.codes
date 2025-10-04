@@ -13,24 +13,25 @@ let min = Infinity;
 let max = -Infinity;
 
 conversionMap.keys().forEach((initial) => {
-  let current = defaultDict(() => 0);
-  current[initial] = 1;
-  let next = defaultDict(() => 0);
+  let populationPerType = defaultDict(() => 0);
+  populationPerType[initial] = 1;
+
+  let nextGeneration = defaultDict(() => 0);
 
   for (let day = 0; day < 20; day++) {
-    for (const [termites, count] of Object.entries(current)) {
-      const conversions = conversionMap.get(termites)!;
+    for (const [type, population] of Object.entries(populationPerType)) {
+      const conversions = conversionMap.get(type)!;
 
-      conversions.forEach((t) => {
-        next[t] += count;
+      conversions.forEach((nextType) => {
+        nextGeneration[nextType] += population;
       });
     }
 
-    current = { ...next };
-    next = defaultDict(() => 0);
+    populationPerType = { ...nextGeneration };
+    nextGeneration = defaultDict(() => 0);
   }
 
-  const total = Object.values(current).reduce((acc, curr) => acc + curr, 0);
+  const total = Object.values(populationPerType).reduce((a, b) => a + b, 0);
 
   min = Math.min(min, total);
   max = Math.max(max, total);

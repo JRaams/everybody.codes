@@ -12,8 +12,8 @@ let termites = ["Z"];
 for (let day = 0; day < 10; day++) {
   const newTermites: string[] = [];
 
-  termites.forEach((t) => {
-    const conversions = conversionMap.get(t)!;
+  termites.forEach((type) => {
+    const conversions = conversionMap.get(type)!;
     newTermites.push(...conversions);
   });
 
