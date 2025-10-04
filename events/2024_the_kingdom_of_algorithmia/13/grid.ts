@@ -1,12 +1,17 @@
+import { MinHeap } from "@datastructures-js/heap";
+
 export function parseGrid(txt: string) {
   const grid = txt.split("\n").map((line) => line.split(""));
 
-  const nodes: Node[] = [];
+  const nodes: Node[][] = [];
   let start: Node | undefined;
   let end: Node | undefined;
   let index = 0;
 
   for (let y = 0; y < grid.length; y++) {
+    const row: Node[] = [];
+    nodes.push(row);
+
     for (let x = 0; x < grid[y].length; x++) {
       const symbol = grid[y][x];
       if (!symbol.match(/[0-9SE]/)) continue;
@@ -22,14 +27,14 @@ export function parseGrid(txt: string) {
         neighbours: [],
         symbol,
       };
-      nodes.push(node);
+      row[x] = node;
 
       if (grid[y][x] === "S") start = node;
       else if (grid[y][x] === "E") end = node;
     }
   }
 
-  nodes.forEach((node) => {
+  nodes.flat().forEach((node) => {
     for (const [dx, dy] of [
       [0, 1],
       [1, 0],
@@ -39,7 +44,7 @@ export function parseGrid(txt: string) {
       const nx = node.x + dx;
       const ny = node.y + dy;
 
-      const nnode = nodes.find((n) => n.x === nx && n.y === ny);
+      const nnode = nodes[ny]?.[nx];
       if (nnode) node.neighbours.push(nnode);
     }
   });
@@ -50,18 +55,17 @@ export function parseGrid(txt: string) {
   return { start, end };
 }
 
-export function findShortestPath(start: Node, endSymbol: string): number {
-  let result = Infinity;
+export function findShortestPath(startNode: Node, endSymbol: string): number {
+  const heap = new MinHeap<[Node, number]>((a) => a[1]);
+  heap.push([startNode, 0]);
 
-  const queue: [Node, number][] = [[start, 0]];
-  const seen = new Map<number, number>([[start.index, 0]]);
+  const seen = new Map<number, number>([[startNode.index, 0]]);
 
-  while (queue.length > 0) {
-    const [node, cost] = queue.shift()!;
+  while (!heap.isEmpty()) {
+    const [node, cost] = heap.pop()!;
 
     if (node.symbol === endSymbol) {
-      result = Math.min(result, cost);
-      // TODO: Priority queue..?
+      return cost;
     }
 
     for (const neighbour of node.neighbours) {
@@ -73,15 +77,15 @@ export function findShortestPath(start: Node, endSymbol: string): number {
 
       const newCost = cost + 1 + levelChanges;
 
-      if (seen.has(neighbour.index) && seen.get(neighbour.index)! < newCost)
-        continue;
+      const lowestCostSoFar = seen.get(neighbour.index);
+      if (lowestCostSoFar !== undefined && newCost >= lowestCostSoFar) continue;
 
       seen.set(neighbour.index, newCost);
-      queue.push([neighbour, newCost]);
+      heap.push([neighbour, newCost]);
     }
   }
 
-  return result;
+  throw new Error("No path found");
 }
 
 type Node = {
