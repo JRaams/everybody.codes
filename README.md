@@ -16,6 +16,10 @@ Solutions are written in TypeScript, ran using [Bun v1.2](https://bun.com/)
 
 https://everybody.codes/event/2024/quests
 
+### 🌒 3/60. The Song of Ducks and Dragons [ 2025 ]
+
+https://everybody.codes/event/2025/quests
+
 ## 3. Stories
 
 ### 🪙 9/9. Echoes of Enigmatus [ No. 1 ]
