@@ -1,48 +1,45 @@
-import { defaultDict } from "../../../util/defaultdict";
+import { parse } from "./tome";
 
 const lines = await Bun.file("3.txt").text();
-const [prefixesRaw, rulesRaw] = lines.split("\n\n");
+const { names, rules } = parse(lines);
 
-// 1. Find prefixes and rules
-let prefixes = prefixesRaw.split(",");
-const rules = defaultDict(() => new Set<string>());
-
-rulesRaw.split("\n").forEach((line) => {
-  const [from, toRaw] = line.split(" > ");
-  toRaw.split(",").forEach((to) => {
-    rules[from].add(to);
-  });
-});
-
-// 2. Filter out incompatible prefixes
-prefixes = prefixes.filter((prefix) => {
+// 1. Filter out incompatible prefixes
+const filteredPrefixes = names.filter((prefix) => {
   for (let i = 0; i < prefix.length - 1; i++) {
     if (!rules[prefix[i]].has(prefix[i + 1])) {
       return false;
     }
   }
+
+  // Filter out names that are prefixes of other names (Khara / Kharax)
+  if (names.find((x) => prefix !== x && prefix.startsWith(x))) {
+    return false;
+  }
+
   return true;
 });
 
-// 3. Find unique names betwen 7 and at most 11 characters
-const uniqueNames = new Set<string>();
+// 2. Find unique names between 7 and at most 11 characters
+const cache = new Map<string, number>();
 
-for (const prefix of prefixes) {
-  const queue = [prefix];
+function numUniqueNames(name: string): number {
+  const lastChar = name.at(-1)!;
+  const key = `${lastChar},${name.length}`;
+  if (cache.has(key)) return cache.get(key)!;
 
-  while (queue.length > 0) {
-    const current = queue.shift()!;
+  let num = 0;
 
-    if (current.length > 11) continue;
-    if (current.length >= 7) uniqueNames.add(current);
+  if (name.length > 11) return 0;
+  if (name.length >= 7) num++;
 
-    const lastChar = current.at(-1);
-    if (lastChar === undefined) continue;
-
-    for (const rule of rules[lastChar]) {
-      queue.push(current + rule);
-    }
+  for (const next of rules[lastChar]) {
+    num += numUniqueNames(name + next);
   }
+
+  cache.set(key, num);
+  return num;
 }
 
-console.log(uniqueNames.size);
+const result = filteredPrefixes.reduce((sum, x) => sum + numUniqueNames(x), 0);
+
+console.log(result);

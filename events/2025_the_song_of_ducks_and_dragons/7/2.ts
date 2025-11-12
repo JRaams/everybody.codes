@@ -1,20 +1,8 @@
-import { defaultDict } from "../../../util/defaultdict";
+import { parse } from "./tome";
 
 const lines = await Bun.file("2.txt").text();
-const [namesRaw, rulesRaw] = lines.split("\n\n");
+const { names, rules } = parse(lines);
 
-// 1. Find names and rules
-const names = namesRaw.split(",");
-const rules = defaultDict(() => new Set<string>());
-
-rulesRaw.split("\n").forEach((line) => {
-  const [from, toRaw] = line.split(" > ");
-  toRaw.split(",").forEach((to) => {
-    rules[from].add(to);
-  });
-});
-
-// 2. Find indexes of valid names
 let result = 0;
 
 nextName: for (const [index, name] of names.entries()) {
