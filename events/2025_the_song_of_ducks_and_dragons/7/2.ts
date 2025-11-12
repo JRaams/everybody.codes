@@ -5,13 +5,14 @@ const { names, rules } = parse(lines);
 
 let result = 0;
 
-nextName: for (const [index, name] of names.entries()) {
+names.forEach((name, index) => {
   for (let i = 0; i < name.length - 1; i++) {
     if (!rules[name[i]].has(name[i + 1])) {
-      continue nextName;
+      return;
     }
   }
+
   result += index + 1;
-}
+});
 
 console.log(result);

@@ -3,23 +3,6 @@ import { parse } from "./tome";
 const lines = await Bun.file("3.txt").text();
 const { names, rules } = parse(lines);
 
-// 1. Filter out incompatible prefixes
-const filteredPrefixes = names.filter((prefix) => {
-  for (let i = 0; i < prefix.length - 1; i++) {
-    if (!rules[prefix[i]].has(prefix[i + 1])) {
-      return false;
-    }
-  }
-
-  // Filter out names that are prefixes of other names (Khara / Kharax)
-  if (names.find((x) => prefix !== x && prefix.startsWith(x))) {
-    return false;
-  }
-
-  return true;
-});
-
-// 2. Find unique names between 7 and at most 11 characters
 const cache = new Map<string, number>();
 
 function numUniqueNames(name: string): number {
@@ -40,6 +23,22 @@ function numUniqueNames(name: string): number {
   return num;
 }
 
-const result = filteredPrefixes.reduce((sum, x) => sum + numUniqueNames(x), 0);
+let result = 0;
+
+names.forEach((prefix) => {
+  // Filter out incompatible prefixes
+  for (let i = 0; i < prefix.length - 1; i++) {
+    if (!rules[prefix[i]].has(prefix[i + 1])) {
+      return;
+    }
+  }
+
+  // Filter out names that are prefixed by other names (Kharax -> Khara)
+  if (names.find((x) => prefix !== x && prefix.startsWith(x))) {
+    return;
+  }
+
+  result += numUniqueNames(prefix);
+});
 
 console.log(result);
