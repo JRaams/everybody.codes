@@ -1,47 +1,30 @@
-import { defaultDict } from "../../../util/defaultdict";
+import { parse, findFamilies } from "./dna";
 
-const lines = await Bun.file("3.txt").text();
-const input = lines.split("\n").map((line) => line.split(":")[1]);
+const input = await parse("3.txt");
 
-const nodeMap = defaultDict(() => new Array<number>());
+const families = findFamilies(input);
 
-for (let p1 = 0; p1 < input.length; p1++) {
-  const seqp1 = input[p1];
+const links = Array.from({ length: input.length }, () => new Array<number>());
 
-  for (let p2 = p1 + 1; p2 < input.length; p2++) {
-    const seqp2 = input[p2];
-
-    input.forEach((seqc, c) => {
-      if (c === p1 || c === p2) return;
-
-      for (let i = 0; i < seqc.length; i++) {
-        if (seqc[i] !== seqp1[i] && seqc[i] !== seqp2[i]) {
-          return;
-        }
-      }
-
-      nodeMap[c + 1].push(p1 + 1);
-      nodeMap[p1 + 1].push(c + 1);
-
-      nodeMap[c + 1].push(p2 + 1);
-      nodeMap[p2 + 1].push(c + 1);
-    });
-  }
-}
+families.forEach((family) => {
+  links[family.imum].push(family.ichild);
+  links[family.idad].push(family.ichild);
+  links[family.ichild].push(family.imum, family.idad);
+});
 
 const seen = new Set<number>();
 let largestFamily: number[] = [];
 
-Object.keys(nodeMap).forEach((strKey) => {
-  const key = Number(strKey);
-  if (seen.has(key)) return;
-  seen.add(key);
+for (let i = 0; i < links.length; i++) {
+  if (seen.has(i)) continue;
+  seen.add(i);
 
-  const family: number[] = [key];
+  const family: number[] = [i];
 
-  for (let i = 0; i < family.length; i++) {
-    const node = family[i];
-    for (const neighbor of nodeMap[node]) {
+  for (let j = 0; j < family.length; j++) {
+    const node = family[j];
+
+    for (const neighbor of links[node]) {
       if (seen.has(neighbor)) continue;
       seen.add(neighbor);
       family.push(neighbor);
@@ -51,8 +34,8 @@ Object.keys(nodeMap).forEach((strKey) => {
   if (largestFamily.length < family.length) {
     largestFamily = family;
   }
-});
+}
 
-const sum = largestFamily.reduce((a, b) => a + b, 0);
+const sum = largestFamily.reduce((a, b) => a + b + 1, 0);
 
 console.log(sum);
