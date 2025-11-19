@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+magick 2-exploded.ppm 2-exploded.webp
+magick 2-original.ppm 2-original.webp
+
+magick 3-exploded.ppm 3-exploded.webp
+magick 3-original.ppm 3-original.webp
