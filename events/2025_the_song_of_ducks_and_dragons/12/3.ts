@@ -8,8 +8,21 @@ function findBestPosition(alreadySeen: Set<string>) {
   let best = new Set<string>();
 
   for (let y = 0; y < grid.length; y++) {
-    for (let x = 0; x < grid[0].length; x++) {
-      if (grid[y][x] < 2) continue;
+    nextCell: for (let x = 0; x < grid[0].length; x++) {
+      // Skip cell if a neighbour is higher
+      for (const [dy, dx] of [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+      ]) {
+        if (
+          grid[y + dy]?.[x + dx] !== undefined &&
+          grid[y + dy][x + dx] > grid[y][x]
+        ) {
+          continue nextCell;
+        }
+      }
 
       const barrels = findExplodedBarrels(grid, y, x, alreadySeen);
 
