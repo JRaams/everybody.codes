@@ -32,6 +32,6 @@ https://everybody.codes/story/2/quests
 
 ![](./stories/2_the_entertainment_hub/3/output.webp)
 
-### 🌒 3/9. Melody Made of Code [ No. 3 ]
+### 🌒 6/9. Melody Made of Code [ No. 3 ]
 
 https://everybody.codes/story/3/quests
