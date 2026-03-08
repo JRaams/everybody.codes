@@ -1,6 +1,6 @@
 const input = await Bun.file("1.txt").text();
 
-export type Node = {
+type Node = {
   id: number;
   plugStr: string;
   leftStr: string;
@@ -11,7 +11,7 @@ export type Node = {
   right?: Node;
 };
 
-export function parse(input: string): Node[] {
+function parse(input: string): Node[] {
   const nodes: Node[] = [];
 
   input

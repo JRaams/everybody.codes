@@ -1,6 +1,6 @@
 const input = await Bun.file("3.txt").text();
 
-export type Node = {
+class Node {
   id: number;
   plugColor: string;
   plugShape: string;
@@ -9,156 +9,119 @@ export type Node = {
   rightColor: string;
   rightShape: string;
 
-  plug?: Node;
   left?: Node;
   right?: Node;
-};
 
-type Ref = { value: Node };
+  constructor(line: string) {
+    const match = line.match(
+      /id=(\d+), plug=(.+), leftSocket=(.+), rightSocket=(.+), data=(.+)/,
+    );
 
-export function parse(input: string): Node[] {
-  const nodes: Node[] = [];
+    if (!match) throw new Error("Unable to match: " + line);
 
-  input
-    .trim()
-    .split("\n")
-    .forEach((line) => {
-      const match = line.match(
-        /id=(\d+), plug=(.+), leftSocket=(.+), rightSocket=(.+), data=(.+)/,
-      );
+    const [_, idStr, plugStr, leftStr, rightStr] = match;
 
-      if (!match) throw new Error("Unable to match: " + line);
+    const [plugColor, plugShape] = plugStr.split(" ");
+    const [leftColor, leftShape] = leftStr.split(" ");
+    const [rightColor, rightShape] = rightStr.split(" ");
 
-      const [_, idStr, plugStr, leftStr, rightStr] = match;
+    this.id = Number(idStr);
+    this.plugColor = plugColor;
+    this.plugShape = plugShape;
+    this.leftColor = leftColor;
+    this.leftShape = leftShape;
+    this.rightColor = rightColor;
+    this.rightShape = rightShape;
+  }
 
-      const [plugColor, plugShape] = plugStr.split(" ");
-      const [leftColor, leftShape] = leftStr.split(" ");
-      const [rightColor, rightShape] = rightStr.split(" ");
+  public bond(plug: Node, side: "left" | "right"): "strong" | "weak" | null {
+    const color = side === "left" ? this.leftColor : this.rightColor;
+    const shape = side === "left" ? this.leftShape : this.rightShape;
 
-      nodes.push({
-        id: Number(idStr),
-        plugColor,
-        plugShape,
-        leftColor,
-        leftShape,
-        rightColor,
-        rightShape,
-      });
-    });
-
-  return nodes;
-}
-
-function bond(
-  socket: Node,
-  toInsert: Node,
-  side: "left" | "right",
-): "strong" | "weak" | null {
-  if (side === "left") {
-    const colorMatch = socket.leftColor === toInsert.plugColor;
-    const shapeMatch = socket.leftShape === toInsert.plugShape;
+    const colorMatch = color === plug.plugColor;
+    const shapeMatch = shape === plug.plugShape;
 
     if (colorMatch && shapeMatch) {
       return "strong";
     } else if (colorMatch || shapeMatch) {
       return "weak";
     }
-  } else {
-    const colorMatch = socket.rightColor === toInsert.plugColor;
-    const shapeMatch = socket.rightShape === toInsert.plugShape;
 
-    if (colorMatch && shapeMatch) {
-      return "strong";
-    } else if (colorMatch || shapeMatch) {
-      return "weak";
+    return null;
+  }
+
+  public traverse(): Node[] {
+    const output: Node[] = [];
+
+    if (this.left) {
+      output.push(...this.left.traverse());
     }
+
+    output.push(this);
+
+    if (this.right) {
+      output.push(...this.right.traverse());
+    }
+
+    return output;
   }
 
-  return null;
-}
-
-function insert(current: Node, toInsert: Ref): boolean {
-  if (!current.left && bond(current, toInsert.value, "left")) {
-    current.left = toInsert.value;
-    toInsert.value.plug = current;
-    console.log(`Added node ${toInsert.value.id} to left of ${current.id}`);
-    return true;
-  }
-
-  if (current.left) {
-    if (
-      bond(current, current.left, "left") === "weak" &&
-      bond(current, toInsert.value, "left") === "strong"
-    ) {
-      console.log(
-        `overwrite weak ${current.left.id} with strong ${toInsert.value.id} for left ${current.id}`,
-      );
-      const temp = current.left;
-      current.left = toInsert.value;
-      toInsert.value = temp;
-    } else if (insert(current.left, toInsert)) {
+  public insert(toInsert: NodeRef): boolean {
+    if (!this.left && this.bond(toInsert.value, "left") !== null) {
+      this.left = toInsert.value;
       return true;
     }
-  }
 
-  if (!current.right && bond(current, toInsert.value, "right")) {
-    current.right = toInsert.value;
-    toInsert.value.plug = current;
-    console.log(`Added node ${toInsert.value.id} to right of ${current.id}`);
-    return true;
-  }
+    if (this.left) {
+      if (
+        this.bond(this.left, "left") === "weak" &&
+        this.bond(toInsert.value, "left") === "strong"
+      ) {
+        [this.left, toInsert.value] = [toInsert.value, this.left];
+        // No return to ensure the replaced node with weak bond continues inserting from the same location as toInsert
+      } else if (this.left.insert(toInsert)) {
+        return true;
+      }
+    }
 
-  if (current.right) {
-    if (
-      bond(current, current.right, "right") === "weak" &&
-      bond(current, toInsert.value, "right") === "strong"
-    ) {
-      console.log(
-        `overwrite weak ${current.right.id} with strong ${toInsert.value.id} for right ${current.id}`,
-      );
-      const temp = current.right;
-      current.right = toInsert.value;
-      toInsert.value = temp;
-    } else if (insert(current.right, toInsert)) {
+    if (!this.right && this.bond(toInsert.value, "right") !== null) {
+      this.right = toInsert.value;
       return true;
     }
-  }
 
-  return false;
+    if (this.right) {
+      if (
+        this.bond(this.right, "right") === "weak" &&
+        this.bond(toInsert.value, "right") === "strong"
+      ) {
+        [this.right, toInsert.value] = [toInsert.value, this.right];
+        return false;
+      } else if (this.right.insert(toInsert)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
 
-const nodes = parse(input);
+type NodeRef = { value: Node };
+
+const nodes = input
+  .trim()
+  .split("\n")
+  .map((line) => new Node(line));
 
 const root = nodes[0];
-console.log(`${root.id} becomes root`);
 
 for (let i = 1; i < nodes.length; i++) {
-  const toInsert = { value: nodes[i] };
-  while (!insert(root, toInsert)) {
-    console.log("Chain reaction");
-  }
+  const toInsert: NodeRef = { value: nodes[i] };
+  while (!root.insert(toInsert)) {}
 }
 
-function traverse(current: Node): Node[] {
-  const output: Node[] = [];
-
-  if (current.left) {
-    output.push(...traverse(current.left));
-  }
-
-  output.push(current);
-
-  if (current.right) {
-    output.push(...traverse(current.right));
-  }
-
-  return output;
-}
-
-const path = traverse(root);
+const path = root.traverse();
 
 let checksum = 0;
-
 for (let i = 0; i < path.length; i++) {
   checksum += (i + 1) * path[i].id;
 }
