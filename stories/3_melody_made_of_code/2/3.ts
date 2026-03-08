@@ -5,11 +5,13 @@ function parse(input: string) {
   let grid: string[][] = [];
   const bones: [number, number][] = [];
 
+  const PADDING = 20;
+
   const lines = input.trim().split("\n");
   for (let y = 0; y < lines.length; y++) {
     grid.push([]);
 
-    for (let x = 0; x < lines[y].length; x++) {
+    for (let x = 0; x < PADDING; x++) {
       grid[y].push(".");
     }
 
@@ -24,16 +26,16 @@ function parse(input: string) {
       }
     }
 
-    for (let x = 0; x < lines[y].length; x++) {
+    for (let x = 0; x < PADDING; x++) {
       grid[y].push(".");
     }
   }
 
-  for (let y = 0; y < lines.length; y++) {
+  for (let y = 0; y < PADDING; y++) {
     let pre: string[] = [];
     let post: string[] = [];
 
-    for (let x = 0; x < lines[y].length * 3; x++) {
+    for (let x = 0; x < lines[y].length + PADDING * 2; x++) {
       pre.push(".");
       post.push(".");
     }
@@ -42,12 +44,12 @@ function parse(input: string) {
     grid.push(post);
   }
 
-  py += lines.length;
-  px += lines[0].length;
+  py += PADDING;
+  px += PADDING;
 
   for (let i = 0; i < bones.length; i++) {
-    bones[i][0] += lines.length;
-    bones[i][1] += lines[0].length;
+    bones[i][0] += PADDING;
+    bones[i][1] += PADDING;
   }
 
   return { grid, py, px, bones };
@@ -160,7 +162,7 @@ while (true) {
   }
 
   if (areBonesSurrounded()) {
-    console.log("surrounded", steps);
+    console.log(steps);
     break;
   }
 
