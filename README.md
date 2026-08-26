@@ -35,3 +35,7 @@ https://everybody.codes/story/2/quests
 ### 🪙 9/9. Melody Made of Code [ No. 3 ]
 
 https://everybody.codes/story/3/quests
+
+### 🪙 3/9. The Digital Atelier [ No. 4 ]
+
+https://everybody.codes/story/4/quests
