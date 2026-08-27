@@ -36,6 +36,6 @@ https://everybody.codes/story/2/quests
 
 https://everybody.codes/story/3/quests
 
-### 🪙 3/9. The Digital Atelier [ No. 4 ]
+### 🪙 6/9. The Digital Atelier [ No. 4 ]
 
 https://everybody.codes/story/4/quests
