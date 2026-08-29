@@ -39,3 +39,5 @@ https://everybody.codes/story/3/quests
 ### 🪙 9/9. The Digital Atelier [ No. 4 ]
 
 https://everybody.codes/story/4/quests
+
+![](./stories/4_the_digital_ateltier/3/browser/output.png)

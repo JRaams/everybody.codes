@@ -12,8 +12,8 @@ while (queue.length > 0) {
 
   ["A", "B", "C"].forEach((m) => {
     const [bx, by] = beacons.get(m)!;
-    const newX = Math.floor(Math.abs(x + bx) / 2);
-    const newY = Math.floor(Math.abs(y + by) / 2);
+    const newX = Math.floor((x + bx) / 2);
+    const newY = Math.floor((y + by) / 2);
 
     if (!beetles.has(key(newX, newY))) {
       queue.push([newX, newY]);

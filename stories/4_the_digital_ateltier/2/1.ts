@@ -10,8 +10,8 @@ beetles.add(key(x, y));
 for (const move of moves) {
   const [bx, by] = beacons.get(move)!;
 
-  x = Math.floor(Math.abs(x + bx) / 2);
-  y = Math.floor(Math.abs(y + by) / 2);
+  x = Math.floor((x + bx) / 2);
+  y = Math.floor((y + by) / 2);
 
   beetles.add(key(x, y));
 }
