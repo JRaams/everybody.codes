@@ -20,6 +20,10 @@ https://everybody.codes/event/2024/quests
 
 https://everybody.codes/event/2025/quests
 
+### 🪙 3/60. Lord of the Wings [ 2026 ]
+
+https://everybody.codes/event/2026/quests
+
 ## 3. Stories
 
 ### 🪙 9/9. Echoes of Enigmatus [ No. 1 ]
