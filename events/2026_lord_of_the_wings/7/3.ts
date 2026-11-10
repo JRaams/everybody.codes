@@ -8,7 +8,7 @@ type Cloud = {
   connections: number[];
 };
 
-const allClouds: Cloud[] = [];
+const allClouds = new Map<number, Cloud>();
 
 lines
   .trim()
@@ -19,14 +19,11 @@ lines
       .toArray()
       .map(Number);
 
-    allClouds.push({ id, energy, connections });
+    allClouds.set(id, { id, energy, connections });
   });
 
 function totalCloudEnergy(startId: number): number {
-  const clouds = new Map();
-  structuredClone(allClouds).forEach((cloud) => {
-    clouds.set(cloud.id, cloud);
-  });
+  const clouds = structuredClone(allClouds);
 
   let impulses = defaultDict(() => defaultDict(Number));
   impulses[startId][10] = 1;
