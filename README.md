@@ -20,7 +20,7 @@ https://everybody.codes/event/2024/quests
 
 https://everybody.codes/event/2025/quests
 
-### 🌑 51/60. Lord of the Wings [ 2026 ]
+### 🌑 54/60. Lord of the Wings [ 2026 ]
 
 https://everybody.codes/event/2026/quests
 
